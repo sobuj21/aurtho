@@ -1,274 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Aurtho - Futuristic website under construction. Explore the future of digital experiences.">
-    <meta name="keywords" content="Aurtho, futuristic, alien, modern, website, under construction, technology, digital, innovation">
-    <title>Aurtho - Website Under Construction</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aurtho - A futuristic site under construction. Stay tuned." />
+  <meta name="keywords" content="Aurtho, futuristic, modern, forest, tech, under construction" />
+  <meta name="author" content="Aurtho" />
+  <title>Aurtho | Under Construction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <!-- Favicon (simple alien eye emoji as base64 for single file) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👽</text></svg>">
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        // Updated to be more bluish
-                        'aurtho-blue': '#4A90E2', // Deeper, vibrant blue
-                        'aurtho-accent-pink': '#FF69B4', // Retain a vibrant pink accent
-                        'aurtho-light-cyan': '#87CEEB', // Sky Blue / Light Cyan
-                        'aurtho-dark-blue': '#2C5DAF', // Darker blue
-                        'aurtho-electric-blue': '#00FFFF', // Electric Cyan/Blue for highlights
-                        'aurtho-violet-blue': '#6A5ACD', // Slate Blue / Violet
-                        'aurtho-dark-bg': '#050515', // Even darker background
-                        'aurtho-transparent-dark': 'rgba(5, 5, 21, 0.7)', // Transparent dark for sections
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    header {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
 
-    <style>
-        /* Custom CSS for Alien Forest Scenario and subtle animations */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #050515; /* Even deeper space background */
-            color: #E0E0F0; /* Light grey for text */
-            overflow-x: hidden; /* Prevent horizontal scroll */
-        }
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      background: linear-gradient(to right, #00f0ff, #ff007c, #00ff8c, #1e90ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 4s ease-in-out infinite;
+    }
 
-        /* Background gradient for overall futuristic feel - More bluish */
-        .futuristic-bg {
-            background: radial-gradient(circle at top left, rgba(65, 105, 225, 0.3) 0%, transparent 30%),
-                        radial-gradient(circle at bottom right, rgba(0, 255, 255, 0.2) 0%, transparent 30%),
-                        linear-gradient(135deg, #050515 0%, #101030 100%); /* Dark blue to slightly lighter dark blue */
-            min-height: 100vh;
-            position: relative;
-            z-index: 0;
-        }
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 4px #00fff2); }
+      50% { filter: drop-shadow(0 0 10px #ff5cf5); }
+    }
 
-        /* Alien Plant/Forest Elements - Abstract and glowing - More bluish */
-        .alien-plant {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(20px); /* Increased blur for more glow */
-            opacity: 0.5;
-            animation: pulse-glow 5s infinite alternate ease-in-out; /* New animation name */
-            z-index: 1; /* Above background, below content */
-        }
+    main {
+      text-align: center;
+      margin: auto;
+      padding: 2rem;
+    }
 
-        .plant-1 {
-            width: 180px;
-            height: 180px;
-            background: linear-gradient(45deg, #4A90E2, #2C5DAF); /* Vibrant Blue to Dark Blue */
-            top: 10%;
-            left: 8%;
-            animation-delay: 0s;
-        }
-        .plant-2 {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, #00FFFF, #4A90E2); /* Electric Blue to Vibrant Blue */
-            top: 35%;
-            right: 12%;
-            animation-delay: 1.5s;
-        }
-        .plant-3 {
-            width: 220px;
-            height: 220px;
-            background: linear-gradient(45deg, #6A5ACD, #4A90E2); /* Violet Blue to Vibrant Blue */
-            bottom: 10%;
-            left: 25%;
-            animation-delay: 3s;
-        }
-        .plant-4 {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(45deg, #87CEEB, #00FFFF); /* Light Cyan to Electric Blue */
-            top: 55%;
-            left: 0%;
-            transform: translateY(-50%);
-            animation-delay: 0.7s;
-        }
-        .plant-5 {
-            width: 190px;
-            height: 190px;
-            background: linear-gradient(45deg, #2C5DAF, #6A5ACD); /* Dark Blue to Violet Blue */
-            bottom: 3%;
-            right: 8%;
-            animation-delay: 4s;
-        }
+    .message {
+      font-size: 2rem;
+      background: linear-gradient(to right, #ff6ec4, #7873f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+    }
 
-        /* Keyframe for pulsing glow effect */
-        @keyframes pulse-glow {
-            0% { transform: scale(1); opacity: 0.5; filter: blur(20px); }
-            50% { transform: scale(1.08); opacity: 0.7; filter: blur(25px); }
-            100% { transform: scale(1); opacity: 0.5; filter: blur(20px); }
-        }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      font-size: 1rem;
+    }
 
-        /* Under Construction Message Styling - More dynamic and cool */
-        .under-construction-text {
-            font-size: 2.8rem; /* Slightly larger default */
-            letter-spacing: 0.15em; /* Increased letter spacing */
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.9), 0 0 30px rgba(0, 255, 255, 0.7), 0 0 45px rgba(0, 255, 255, 0.5); /* Electric blue glow */
-            animation: glitch-flicker 2s infinite alternate steps(2); /* New glitch-flicker animation */
-            line-height: 1.3;
-            position: relative;
-            z-index: 2; /* Ensure it's above other elements */
-        }
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
 
-        /* Glitch effect for the text */
-        @keyframes glitch-flicker {
-            0%, 100% {
-                opacity: 1;
-                transform: translate(0, 0);
-                text-shadow: 0 0 15px rgba(0, 255, 255, 0.9), 0 0 30px rgba(0, 255, 255, 0.7);
-            }
-            20% {
-                opacity: 0.9;
-                transform: translate(-2px, 2px);
-                text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 25px rgba(0, 255, 255, 0.6);
-            }
-            40% {
-                opacity: 1;
-                transform: translate(1px, -1px);
-                text-shadow: 0 0 18px rgba(0, 255, 255, 0.95), 0 0 35px rgba(0, 255, 255, 0.75);
-            }
-            60% {
-                opacity: 0.8;
-                transform: translate(-1px, 1px);
-                text-shadow: 0 0 12px rgba(0, 255, 255, 0.7), 0 0 28px rgba(0, 255, 255, 0.5);
-            }
-            80% {
-                opacity: 1;
-                transform: translate(2px, -2px);
-                text-shadow: 0 0 16px rgba(0, 255, 255, 0.92), 0 0 32px rgba(0, 255, 255, 0.72);
-            }
-        }
+    .contact-info a {
+      color: #00fff2;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
 
-        @media (min-width: 768px) {
-            .under-construction-text {
-                font-size: 4.5rem; /* Larger for desktop */
-            }
-        }
+    .contact-info a:hover {
+      color: #ff5cf5;
+    }
 
-        /* Aurtho Logo Styling - More bluish */
-        .aurtho-logo {
-            font-size: 3.5rem; /* Slightly larger default */
-            font-weight: 700;
-            letter-spacing: 0.25em; /* Increased letter spacing */
-            background: linear-gradient(45deg, #00FFFF, #4A90E2, #6A5ACD); /* Electric Blue to Vibrant Blue to Violet Blue */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(74, 144, 226, 0.6); /* Electric blue glow */
-            animation: neon-pulse 2.5s infinite alternate; /* New animation name */
-        }
-
-        @media (min-width: 768px) {
-            .aurtho-logo {
-                font-size: 6rem; /* Larger for desktop */
-            }
-        }
-
-        @keyframes neon-pulse {
-            0%, 100% { text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(74, 144, 226, 0.6); }
-            50% { text-shadow: 0 0 25px rgba(0, 255, 255, 1), 0 0 50px rgba(74, 144, 226, 0.8); }
-        }
-
-        /* Transparent Glassmorphism Effect for sections */
-        .glassmorphism {
-            background-color: rgba(255, 255, 255, 0.05); /* Even more subtle white for transparency */
-            backdrop-filter: blur(12px); /* Increased blur */
-            border: 1px solid rgba(0, 255, 255, 0.1); /* Subtle electric blue border */
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4); /* Stronger shadow */
-        }
-    </style>
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 2.2rem;
+      }
+      .message {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
-<body class="futuristic-bg min-h-screen flex flex-col justify-between items-center text-center relative">
 
-    <!-- Alien Plant/Forest Elements - positioned absolutely -->
-    <div class="alien-plant plant-1"></div>
-    <div class="alien-plant plant-2"></div>
-    <div class="alien-plant plant-3"></div>
-    <div class="alien-plant plant-4"></div>
-    <div class="alien-plant plant-5"></div>
+<body>
+  <header>
+    <div class="logo">Aurtho</div>
+  </header>
 
-    <!-- Header / Home Bar -->
-    <header class="w-full py-6 px-4 md:px-8 z-10">
-        <nav class="glassmorphism rounded-xl p-4 flex justify-center items-center max-w-4xl mx-auto">
-            <h1 class="aurtho-logo">Aurtho</h1>
-        </nav>
-    </header>
+  <main>
+    <div class="message">Website is under construction,<br />Please visit again later.</div>
+  </main>
 
-    <!-- Main Content - Under Construction Message -->
-    <main class="flex-grow flex flex-col justify-center items-center p-4 md:p-8 z-10">
-        <section class="glassmorphism rounded-xl p-8 md:p-12 max-w-3xl mx-auto relative overflow-hidden">
-            <!-- Animated border effect -->
-            <div class="absolute inset-0 rounded-xl border-2 border-transparent animate-spin-border"></div>
-            <style>
-                @keyframes spin-border {
-                    0% { border-image: linear-gradient(0deg, #00FFFF, #4A90E2) 1; }
-                    25% { border-image: linear-gradient(90deg, #00FFFF, #4A90E2) 1; }
-                    50% { border-image: linear-gradient(180deg, #00FFFF, #4A90E2) 1; }
-                    75% { border-image: linear-gradient(270deg, #00FFFF, #4A90E2) 1; }
-                    100% { border-image: linear-gradient(360deg, #00FFFF, #4A90E2) 1; }
-                }
-            </style>
-
-            <p class="under-construction-text text-aurtho-electric-blue font-bold tracking-wider mb-4">
-                <!-- Replaced ⚙️ with 🛸, ⏣ with 🪷, and ⎊ with 🌿 -->
-                <span class="block">⊚ 🛸 🪷 🌿 ⊚</span>
-                <span class="block mt-2">Website is under construction.</span>
-                <span class="block">Please visit again later.</span>
-                <span class="block mt-2">⊚ 🛸 🪷 🌿 ⊚</span>
-            </p>
-            <p class="text-sm md:text-base text-gray-400 mt-6">
-                Our digital architects are currently calibrating the quantum data streams.
-                Prepare for an immersive journey into the future.
-            </p>
-        </section>
-    </main>
-
-    <!-- Contact Info Section -->
-    <section class="w-full py-8 px-4 md:px-8 z-10">
-        <div class="glassmorphism rounded-xl p-6 md:p-8 max-w-2xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-semibold mb-6 text-aurtho-light-cyan tracking-wide">
-                <i class="fas fa-satellite-dish mr-3 text-aurtho-accent-pink"></i>
-                Connect with the Nexus
-            </h2>
-            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
-                <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer"
-                   class="flex items-center text-white hover:text-aurtho-electric-blue transition duration-300 ease-in-out group">
-                    <i class="fab fa-whatsapp text-4xl mr-3 text-aurtho-electric-blue group-hover:scale-110 transition-transform"></i>
-                    <span class="text-lg md:text-xl font-medium">+1 716-226-8360</span>
-                </a>
-                <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer"
-                   class="flex items-center text-white hover:text-aurtho-dark-blue transition duration-300 ease-in-out group">
-                    <i class="fab fa-facebook-f text-4xl mr-3 text-aurtho-dark-blue group-hover:scale-110 transition-transform"></i>
-                    <span class="text-lg md:text-xl font-medium">sobujis</span>
-                </a>
-            </div>
-            <p class="text-sm md:text-base text-gray-500 mt-6">
-                Transmissions are open across the digital cosmos.
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="w-full py-4 text-center text-gray-600 text-sm z-10">
-        <p>&copy; 2025 Aurtho.com. All rights reserved.</p>
-    </footer>
-
+  <footer>
+    <div class="contact-info">
+      <a href="https://wa.me/17162268360" target="_blank">WhatsApp: +1 716 226 8360</a>
+      <a href="https://www.facebook.com/sobujis" target="_blank">Facebook</a>
+    </div>
+    <div style="margin-top: 1rem; opacity: 0.6;">&copy; 2025 Aurtho.com. All rights reserved.</div>
+  </footer>
 </body>
+
 </html>
