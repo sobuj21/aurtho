@@ -2,120 +2,324 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Aurtho - A futuristic site under construction. Stay tuned." />
-  <meta name="keywords" content="Aurtho, futuristic, modern, forest, tech, under construction" />
-  <meta name="author" content="Aurtho" />
-  <title>Aurtho | Under Construction</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aurtho - A futuristic site under construction. Stay tuned." />
+    <meta name="keywords" content="Aurtho, futuristic, modern, forest, tech, under construction" />
+    <meta name="author" content="Aurtho" />
+    <title>Aurtho | Under Construction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Include Three.js library for 3D effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Rajdhani', sans-serif;
-      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center;
-      height: 100vh;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        /* Prevent scrollbars due to fixed canvas */
+        html, body {
+            overflow: hidden;
+        }
 
-    header {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-    }
+        /* Body Styling */
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            /* Background is now handled by the 3D canvas */
+            background: transparent;
+            height: 100vh; /* Full viewport height */
+            color: #fff; /* White text color for all content */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space between header, main, and footer */
+            position: relative; /* Needed for z-index context for child elements */
+            z-index: 0; /* Base z-index for body content */
+        }
 
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 3rem;
-      background: linear-gradient(to right, #00f0ff, #ff007c, #00ff8c, #1e90ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: glow 4s ease-in-out infinite;
-    }
+        /* Three.js Canvas Styling - fixed to cover the entire viewport */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind all other content */
+            /* Fallback background image if Three.js fails or for initial load */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
 
-    @keyframes glow {
-      0%, 100% { filter: drop-shadow(0 0 4px #00fff2); }
-      50% { filter: drop-shadow(0 0 10px #ff5cf5); }
-    }
+        /* Header Styling */
+        header {
+            text-align: center;
+            padding: 2rem;
+            /* No background or blur, allowing the 3D canvas to show through */
+            background: transparent;
+            backdrop-filter: none;
+            position: relative; /* Ensure it's above the canvas */
+            z-index: 1;
+        }
 
-    main {
-      text-align: center;
-      margin: auto;
-      padding: 2rem;
-    }
+        /* Logo Link Styling - styled as a glowing, transparent button */
+        .logo-link {
+            text-decoration: none; /* Remove underline */
+            color: inherit; /* Inherit color from parent to apply gradient */
+            cursor: pointer; /* Indicate it's clickable */
+            display: inline-block; /* Allows padding/margin and button styling */
+            padding: 0.5rem 1.5rem; /* Padding for visual space */
+            border: none; /* No visible border */
+            border-radius: 25px; /* Rounded corners */
+            background-color: transparent; /* Fully transparent background */
+            /* Add a subtle glowing box shadow for a futuristic look */
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.2);
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
 
-    .message {
-      font-size: 2rem;
-      background: linear-gradient(to right, #ff6ec4, #7873f5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 2rem;
-    }
+        .logo-link:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.8), inset 0 0 15px rgba(0, 240, 255, 0.4); /* Brighter glow on hover */
+            transform: translateY(-3px); /* Slight lift effect on hover */
+        }
 
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      font-size: 1rem;
-    }
+        /* Logo Text Styling */
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            /* Gradient text effect */
+            background: linear-gradient(to right, #00f0ff, #ff007c, #00ff8c, #1e90ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 4s ease-in-out infinite; /* Pulsating glow animation */
+            /* Add text shadow for a more pronounced 3D/glowing effect */
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 15px rgba(255, 0, 124, 0.4);
+        }
 
-    .contact-info {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
+        /* Glow Animation for Logo */
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 4px #00fff2); } /* Initial and final glow */
+            50% { filter: drop-shadow(0 0 10px #ff5cf5); } /* Stronger glow in the middle */
+        }
 
-    .contact-info a {
-      color: #00fff2;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
+        /* Main Content Styling */
+        main {
+            text-align: center;
+            margin: auto; /* Center the main content vertically and horizontally */
+            padding: 2rem;
+            position: relative; /* Ensure it's above the canvas */
+            z-index: 1;
+        }
 
-    .contact-info a:hover {
-      color: #ff5cf5;
-    }
+        /* Message Text Styling */
+        .message {
+            font-size: 2rem;
+            font-family: 'Orbitron', sans-serif; /* Futuristic font */
+            /* Gradient text effect for the message */
+            background: linear-gradient(to right, #ff6ec4, #7873f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            /* Add text shadow for a more pronounced 3D/glowing effect */
+            text-shadow: 0 0 8px rgba(255, 110, 196, 0.6), 0 0 15px rgba(120, 115, 245, 0.4);
+        }
 
-    @media (max-width: 768px) {
-      .logo {
-        font-size: 2.2rem;
-      }
-      .message {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+        /* Footer Styling */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            /* No background or blur, allowing the 3D canvas to show through */
+            background: transparent;
+            backdrop-filter: none;
+            font-size: 1rem;
+            position: relative; /* Ensure it's above the canvas */
+            z-index: 1;
+        }
+
+        /* Contact Info Container */
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem; /* Space between contact links */
+            flex-wrap: wrap; /* Allow links to wrap on smaller screens */
+        }
+
+        /* Contact Link Styling - now glowing, transparent button-like elements */
+        .contact-info a {
+            color: #00fff2; /* Cyan-like color for links */
+            text-decoration: none;
+            padding: 0.75rem 1.5rem; /* Padding for visual space */
+            border: none; /* No visible border */
+            border-radius: 25px; /* Rounded corners */
+            background-color: transparent; /* Fully transparent background */
+            /* Add a strong glowing box shadow */
+            box-shadow: 0 0 15px rgba(0, 255, 242, 0.5), inset 0 0 10px rgba(0, 255, 242, 0.3);
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+            /* Add text shadow for glowing text */
+            text-shadow: 0 0 5px #00fff2, 0 0 10px #00fff2;
+        }
+
+        /* Contact Link Hover Effect */
+        .contact-info a:hover {
+            color: #ff5cf5; /* Pink-like color on hover */
+            box-shadow: 0 0 25px rgba(255, 92, 245, 0.8), inset 0 0 15px rgba(255, 92, 245, 0.4); /* Brighter glow on hover */
+            transform: translateY(-3px); /* Slight lift effect on hover */
+            text-shadow: 0 0 8px #ff5cf5, 0 0 15px #ff5cf5; /* Brighter text glow on hover */
+        }
+
+        /* Responsive Adjustments for Smaller Screens */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.2rem; /* Smaller logo on mobile */
+            }
+            .logo-link {
+                padding: 0.4rem 1rem;
+            }
+            .message {
+                font-size: 1.5rem; /* Smaller message on mobile */
+            }
+            .contact-info a {
+                padding: 0.6rem 1.2rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <header>
-    <div class="logo">Aurtho</div>
-  </header>
+    <!-- Canvas for the 3D background. This will render the Three.js scene. -->
+    <canvas id="three-canvas"></canvas>
 
-  <main>
-    <div class="message">Website is under construction,<br />Please visit again later.</div>
-  </main>
+    <header>
+        <!-- The logo is wrapped in an anchor tag to make it clickable -->
+        <a href="/" class="logo-link" aria-label="Reload page">
+            <div class="logo">Aurtho</div>
+        </a>
+    </header>
 
-  <footer>
-    <div class="contact-info">
-      <a href="https://wa.me/17162268360" target="_blank">WhatsApp: +1 716 226 8360</a>
-      <a href="https://www.facebook.com/sobujis" target="_blank">Facebook</a>
-    </div>
-    <div style="margin-top: 1rem; opacity: 0.6;">&copy; 2025 Aurtho.com. All rights reserved.</div>
-  </footer>
+    <main>
+        <div class="message">Website is under construction,<br />Please visit again later.</div>
+    </main>
+
+    <footer>
+        <div class="contact-info">
+            <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer">WhatsApp: +1 716 226 8360</a>
+            <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
+        <div style="margin-top: 1rem; opacity: 0.6;">&copy; 2025 Aurtho.com. All rights reserved.</div>
+    </footer>
+
+    <script>
+        // Three.js variables
+        let scene, camera, renderer, particles;
+        const canvas = document.getElementById('three-canvas');
+
+        /**
+         * Initializes the Three.js scene, camera, renderer, and particles.
+         */
+        function init() {
+            // Create a new Three.js scene
+            scene = new THREE.Scene();
+
+            // Setup the perspective camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5; // Position the camera slightly back
+
+            // Initialize the WebGL renderer
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight); // Set renderer size to match window
+            renderer.setPixelRatio(window.devicePixelRatio); // Adjust for high-DPI screens
+
+            // Create a particle system for the abstract 3D background
+            const particleCount = 1000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3); // x, y, z for each particle
+            const colors = new Float32Array(particleCount * 3); // r, g, b for each particle
+
+            // Define colors for the particle gradient
+            const color1 = new THREE.Color(0x00f0ff); // Cyan
+            const color2 = new THREE.Color(0xff007c); // Pink
+            const color3 = new THREE.Color(0x00ff8c); // Green
+
+            // Populate particle positions and colors
+            for (let i = 0; i < particleCount; i++) {
+                // Randomly position particles within a cube space
+                positions[i * 3] = (Math.random() - 0.5) * 20; // x
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 20; // y
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20; // z
+
+                // Assign a random color from the defined gradient colors
+                const mixedColor = new THREE.Color();
+                const r = Math.random();
+                if (r < 0.33) mixedColor.copy(color1);
+                else if (r < 0.66) mixedColor.copy(color2);
+                else mixedColor.copy(color3);
+
+                colors[i * 3] = mixedColor.r;
+                colors[i * 3 + 1] = mixedColor.g;
+                colors[i * 3 + 2] = mixedColor.b;
+            }
+
+            // Set attributes for the geometry
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            // Create the material for the particles
+            const material = new THREE.PointsMaterial({
+                size: 0.05, // Size of each particle
+                vertexColors: true, // Use colors defined in the geometry
+                transparent: true, // Allow transparency
+                blending: THREE.AdditiveBlending, // For glowing effect
+                sizeAttenuation: true // Particles further away appear smaller
+            });
+
+            // Create the particle system and add it to the scene
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Add ambient light to the scene
+            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+            scene.add(ambientLight);
+
+            // Add a point light for additional illumination (optional for particles)
+            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            // Event listener for window resizing to keep the canvas responsive
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        /**
+         * Handles window resizing, updating camera aspect ratio and renderer size.
+         */
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix(); // Update camera's projection matrix
+            renderer.setSize(window.innerWidth, window.innerHeight); // Resize renderer
+        }
+
+        /**
+         * Animation loop for Three.js.
+         */
+        function animate() {
+            requestAnimationFrame(animate); // Request the next animation frame
+
+            // Rotate particles for a dynamic, subtle movement effect
+            if (particles) {
+                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.001;
+            }
+
+            renderer.render(scene, camera); // Render the scene
+        }
+
+        // Initialize Three.js when the window loads
+        window.onload = function () {
+            init(); // Setup the 3D environment
+            animate(); // Start the animation loop
+        };
+    </script>
 </body>
 
 </html>
