@@ -22,13 +22,14 @@
         /* Prevent scrollbars due to fixed canvas */
         html, body {
             overflow: hidden;
+            /* Ensure body has a default background for the final fade to black */
+            background-color: black; /* Explicitly black */
         }
 
         /* Body Styling */
         body {
             font-family: 'Rajdhani', sans-serif;
-            /* Background is now handled by the 3D canvas */
-            background: transparent;
+            background: transparent; /* No background on body, handled by canvas */
             height: 100vh; /* Full viewport height */
             color: #fff; /* White text color for all content */
             display: flex;
@@ -36,6 +37,7 @@
             justify-content: space-between; /* Distribute space between header, main, and footer */
             position: relative; /* Needed for z-index context for child elements */
             z-index: 0; /* Base z-index for body content */
+            transform-style: preserve-3d; /* For better 3D rendering quality on some browsers */
         }
 
         /* Three.js Canvas Styling - fixed to cover the entire viewport */
@@ -46,19 +48,16 @@
             width: 100%;
             height: 100%;
             z-index: -1; /* Place behind all other content */
-            /* Fallback background image if Three.js fails or for initial load */
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
+            /* IMPORTANT: Removed background-image here to prevent flash on reload */
+            background-color: black; /* Ensure it's black by default */
+            transition: opacity 0.5s ease-out; /* For fading out the canvas */
         }
 
         /* Header Styling */
         header {
             text-align: center;
             padding: 2rem;
-            /* No background or blur, allowing the 3D canvas to show through */
-            background: transparent;
+            background: transparent; /* No background, let 3D canvas show through */
             backdrop-filter: none;
             position: relative; /* Ensure it's above the canvas */
             z-index: 1;
@@ -72,9 +71,9 @@
             display: inline-block; /* Allows padding/margin and button styling */
             padding: 0.5rem 1.5rem; /* Padding for visual space */
             border: none; /* No visible border */
-            border-radius: 25px; /* Rounded corners */
+            border-radius: 30px; /* "Little circular" effect */
             background-color: transparent; /* Fully transparent background */
-            /* Add a subtle glowing box shadow for a futuristic look */
+            /* Add a subtle glowing box shadow */
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.2);
             transition: all 0.3s ease; /* Smooth transition for hover effects */
         }
@@ -129,8 +128,7 @@
         footer {
             text-align: center;
             padding: 2rem;
-            /* No background or blur, allowing the 3D canvas to show through */
-            background: transparent;
+            background: transparent; /* No background, let 3D canvas show through */
             backdrop-filter: none;
             font-size: 1rem;
             position: relative; /* Ensure it's above the canvas */
@@ -151,7 +149,7 @@
             text-decoration: none;
             padding: 0.75rem 1.5rem; /* Padding for visual space */
             border: none; /* No visible border */
-            border-radius: 25px; /* Rounded corners */
+            border-radius: 30px; /* "Little circular" effect */
             background-color: transparent; /* Fully transparent background */
             /* Add a strong glowing box shadow */
             box-shadow: 0 0 15px rgba(0, 255, 242, 0.5), inset 0 0 10px rgba(0, 255, 242, 0.3);
@@ -183,6 +181,12 @@
                 padding: 0.6rem 1.2rem;
             }
         }
+
+        /* Class for elements to be animated into the black hole */
+        .black-hole-animating {
+            transition: transform 3.5s ease-in, opacity 3.5s ease-in; /* Longer, accelerating transition */
+            will-change: transform, opacity;
+        }
     </style>
 </head>
 
@@ -203,7 +207,7 @@
 
     <footer>
         <div class="contact-info">
-            <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer">WhatsApp: +1 716 226 8360</a>
+            <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer">Facebook</a>
         </div>
         <div style="margin-top: 1rem; opacity: 0.6;">&copy; 2025 Aurtho.com. All rights reserved.</div>
@@ -214,8 +218,24 @@
         let scene, camera, renderer, particles;
         const canvas = document.getElementById('three-canvas');
 
+        // Animation state variables
+        let isBlackHoleActive = false;
+        let blackHoleStartTime = 0;
+
+        const blackHoleDuration = 3500; // 3.5 seconds for black hole animation
+        const elementStaggerDelay = 70; // Delay in milliseconds between each element's animation start
+
+        // References to HTML elements to animate
+        let animatingElements = [];
+        // Store original positions and styles for accurate restoration
+        let originalElementStates = new Map();
+
+        // Particle animation state
+        let particleState = 'normal'; // 'normal', 'blackHolePull'
+
         /**
          * Initializes the Three.js scene, camera, renderer, and particles.
+         * Also prepares HTML elements for animation by identifying main components.
          */
         function init() {
             // Create a new Three.js scene
@@ -229,12 +249,14 @@
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight); // Set renderer size to match window
             renderer.setPixelRatio(window.devicePixelRatio); // Adjust for high-DPI screens
+            renderer.setClearColor(0x000000); // Ensure the canvas background is black
 
             // Create a particle system for the abstract 3D background
-            const particleCount = 1000;
+            const particleCount = 5000; // Increased particle count for more density
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(particleCount * 3); // x, y, z for each particle
             const colors = new Float32Array(particleCount * 3); // r, g, b for each particle
+            const velocities = new Float32Array(particleCount * 3); // Store velocities for dynamic movement
 
             // Define colors for the particle gradient
             const color1 = new THREE.Color(0x00f0ff); // Cyan
@@ -247,6 +269,11 @@
                 positions[i * 3] = (Math.random() - 0.5) * 20; // x
                 positions[i * 3 + 1] = (Math.random() - 0.5) * 20; // y
                 positions[i * 3 + 2] = (Math.random() - 0.5) * 20; // z
+
+                // Initialize velocities to zero
+                velocities[i * 3] = 0;
+                velocities[i * 3 + 1] = 0;
+                velocities[i * 3 + 2] = 0;
 
                 // Assign a random color from the defined gradient colors
                 const mixedColor = new THREE.Color();
@@ -263,6 +290,7 @@
             // Set attributes for the geometry
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3)); // Add velocity attribute
 
             // Create the material for the particles
             const material = new THREE.PointsMaterial({
@@ -288,6 +316,27 @@
 
             // Event listener for window resizing to keep the canvas responsive
             window.addEventListener('resize', onWindowResize, false);
+
+            // Identify main HTML elements to animate
+            const logoLink = document.querySelector('.logo-link');
+            const messageDiv = document.querySelector('.message');
+            const contactLinks = Array.from(document.querySelectorAll('footer .contact-info a'));
+            const copyrightDiv = document.querySelector('footer div:last-child');
+
+            // Add these main elements to the animatingElements array
+            if (logoLink) {
+                animatingElements.push(logoLink);
+            }
+            if (messageDiv) {
+                animatingElements.push(messageDiv);
+            }
+            // Add each contact link directly (these are the "circles")
+            animatingElements = animatingElements.concat(contactLinks);
+            if (copyrightDiv) {
+                animatingElements.push(copyrightDiv);
+            }
+            // Elements are still in their normal document flow at this point.
+            // Their positions and styles will be captured just before animation starts.
         }
 
         /**
@@ -300,24 +349,180 @@
         }
 
         /**
-         * Animation loop for Three.js.
+         * Starts the black hole animation for HTML elements with a staggered effect.
+         * This function is called ONLY when the "Aurtho" button is clicked.
          */
-        function animate() {
+        function startBlackHoleAnimation() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            let currentDelay = 0;
+
+            // Capture current positions and styles, then apply fixed positioning
+            animatingElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const computedStyle = window.getComputedStyle(el);
+
+                // Store original state for restoration
+                originalElementStates.set(el, {
+                    rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+                    position: el.style.position || computedStyle.position, // Use inline style if present, else computed
+                    top: el.style.top || computedStyle.top,
+                    left: el.style.left || computedStyle.left,
+                    width: el.style.width || computedStyle.width,
+                    height: el.style.height || computedStyle.height,
+                    transform: el.style.transform || computedStyle.transform,
+                    opacity: el.style.opacity || computedStyle.opacity,
+                    display: el.style.display || computedStyle.display,
+                    margin: el.style.margin || computedStyle.margin,
+                    zIndex: el.style.zIndex || computedStyle.zIndex
+                });
+
+                // Apply fixed positioning and initial transform to maintain current visual position
+                el.style.position = 'fixed';
+                el.style.top = `${rect.top}px`;
+                el.style.left = `${rect.left}px`;
+                el.style.width = `${rect.width}px`;
+                el.style.height = `${rect.height}px`;
+                el.style.margin = '0'; // Remove margins to prevent layout shifts
+                el.style.zIndex = '10'; // Ensure it's above the canvas
+            });
+
+            // Now, trigger the animation for each element with a delay
+            animatingElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('black-hole-animating'); // Add transition class
+
+                    const originalRect = originalElementStates.get(el).rect;
+                    if (!originalRect) return; // Safety check
+
+                    // Calculate the center of the element's original fixed position
+                    const elCenterX = originalRect.x + originalRect.width / 2;
+                    const elCenterY = originalRect.y + originalRect.height / 2;
+
+                    // Calculate translation needed to move its center to the black hole center
+                    const translateX = centerX - elCenterX;
+                    const translateY = centerY - elCenterY;
+
+                    // Apply the transform to move to center, scale to 0, and rotate
+                    el.style.transform = `translate(${translateX}px, ${translateY}px) scale(0) rotate(720deg)`;
+                    el.style.opacity = '0';
+                }, currentDelay);
+                currentDelay += elementStaggerDelay; // Increment delay for the next element
+            });
+
+            // After all elements have disappeared, fade to black and reload
+            setTimeout(() => {
+                // Hide all HTML elements immediately
+                animatingElements.forEach(el => {
+                    el.style.display = 'none';
+                    el.classList.remove('black-hole-animating'); // Remove animation class
+                });
+
+                // Fade out the Three.js canvas
+                canvas.style.opacity = '0';
+
+                // Ensure body is black
+                document.body.style.backgroundColor = 'black';
+
+                // Finally, reload the page after the canvas has faded out
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500); // Wait for canvas fade out (0.5s)
+            }, currentDelay + blackHoleDuration + 500); // Add a buffer after last element finishes disappearing
+        }
+
+        /**
+         * Animation loop for Three.js.
+         * This function is called repeatedly to update the scene.
+         * @param {DOMHighResTimeStamp} time - The current time provided by requestAnimationFrame.
+         */
+        function animate(time) {
             requestAnimationFrame(animate); // Request the next animation frame
 
-            // Rotate particles for a dynamic, subtle movement effect
-            if (particles) {
+            const positions = particles.geometry.attributes.position.array;
+            const velocities = particles.geometry.attributes.velocity.array; // Get velocities array
+            const originalParticleSize = 0.05;
+
+            if (particleState === 'normal') {
+                // Normal particle rotation
                 particles.rotation.x += 0.0005;
                 particles.rotation.y += 0.001;
+                particles.material.opacity = 1;
+                particles.material.size = originalParticleSize;
+            } else if (particleState === 'blackHolePull') {
+                const elapsed = time - blackHoleStartTime;
+                const progress = Math.min(elapsed / blackHoleDuration, 1);
+
+                const blackHoleCenter = new THREE.Vector3(0, 0, 0); // Center of the black hole in 3D space
+
+                for (let i = 0; i < particles.geometry.attributes.position.count; i++) {
+                    const x = positions[i * 3];
+                    const y = positions[i * 3 + 1];
+                    const z = positions[i * 3 + 2];
+
+                    const particleVec = new THREE.Vector3(x, y, z);
+                    const direction = blackHoleCenter.clone().sub(particleVec); // Vector from particle to center
+                    const distance = direction.length();
+
+                    // Increased pull strength and added a slight swirl effect
+                    const pullStrength = 0.02 + (1 - distance / 10) * 0.1 * progress; // Stronger pull
+                    direction.normalize().multiplyScalar(pullStrength);
+
+                    // Add a slight random component to velocities for more chaotic movement
+                    velocities[i * 3] += direction.x + (Math.random() - 0.5) * 0.001;
+                    velocities[i * 3 + 1] += direction.y + (Math.random() - 0.5) * 0.001;
+                    velocities[i * 3 + 2] += direction.z + (Math.random() - 0.5) * 0.001;
+
+                    // Apply velocities to positions
+                    positions[i * 3] += velocities[i * 3];
+                    positions[i * 3 + 1] += velocities[i * 3 + 1];
+                    positions[i * 3 + 2] += velocities[i * 3 + 2];
+
+                    const fadeDistance = 2.0; // Increased fade distance
+                    if (distance < fadeDistance) {
+                        const fadeProgress = 1 - (distance / fadeDistance);
+                        particles.material.opacity = Math.max(0, 1 - fadeProgress * 3); // Faster fade
+                        particles.material.size = Math.max(0.001, originalParticleSize * (1 - fadeProgress * 1.5)); // Faster shrink
+                    } else {
+                        particles.material.opacity = 1;
+                        particles.material.size = originalParticleSize;
+                    }
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+                particles.geometry.attributes.velocity.needsUpdate = true; // Update velocities attribute
+                particles.material.needsUpdate = true;
+
+                // If black hole animation is nearly complete, fade out particles completely
+                if (progress > 0.95) {
+                    particles.material.opacity = Math.max(0, particles.material.opacity - 0.05);
+                }
             }
 
             renderer.render(scene, camera); // Render the scene
         }
 
-        // Initialize Three.js when the window loads
+        // Initialize Three.js and set up event listeners when the window loads
         window.onload = function () {
-            init(); // Setup the 3D environment
-            animate(); // Start the animation loop
+            init(); // Setup the 3D environment and prepare HTML elements (identify main components)
+            animate(0); // Start the animation loop (pass initial time 0)
+
+            // Add click event listener to the logo for the black hole effect
+            const logoLink = document.querySelector('.logo-link');
+            if (logoLink) {
+                logoLink.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior (page reload)
+
+                    if (!isBlackHoleActive) { // Only trigger if no animation is active
+                        isBlackHoleActive = true;
+                        particleState = 'blackHolePull'; // Set particle state for pull
+                        blackHoleStartTime = performance.now(); // Record start time of animation
+
+                        // Start animating HTML elements with staggered delays
+                        startBlackHoleAnimation();
+                    }
+                });
+            }
         };
     </script>
 </body>
