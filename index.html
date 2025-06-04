@@ -8,7 +8,8 @@
     <meta name="keywords" content="Aurtho, futuristic, modern, forest, tech, under construction" />
     <meta name="author" content="Aurtho" />
     <title>Aurtho | Under Construction</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Updated Google Fonts link to include Syncopate and Michroma -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@400;700&family=Syncopate:wght@400;700&family=Michroma&display=swap" rel="stylesheet">
     <!-- Include Three.js library for 3D effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -95,11 +96,13 @@
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 3rem;
-            /* Gradient text effect */
-            background: linear-gradient(to right, #00f0ff, #ff007c, #00ff8c, #1e90ff);
+            /* Enhanced Gradient with more colors and larger background size for animation */
+            background: linear-gradient(to right, #00f0ff, #ff007c, #00ff8c, #1e90ff, #FFFF00, #8A2BE2, #00FF00, #FF1493, #00f0ff);
+            background-size: 400% 100%; /* Make gradient wider than element for animation */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: glow 4s ease-in-out infinite; /* Pulsating glow animation */
+            /* Combined glow animation with new color-shift animation */
+            animation: glow 4s ease-in-out infinite, color-shift 8s linear infinite; /* Faster color shift */
             /* Add text shadow for a more pronounced 3D/glowing effect */
             text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 15px rgba(255, 0, 124, 0.4);
         }
@@ -110,6 +113,12 @@
             50% { filter: drop-shadow(0 0 10px #ff5cf5); } /* Stronger glow in the middle */
         }
 
+        /* New Keyframes for Color Shift Animation */
+        @keyframes color-shift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+        }
+
         /* Main Content Styling */
         main {
             text-align: center;
@@ -117,12 +126,22 @@
             padding: 2rem;
             position: relative; /* Ensure it's above the canvas */
             z-index: 1;
+            max-width: 90%; /* Limit maximum width of the main content */
         }
 
         /* Message Text Styling */
         .message {
-            font-size: 2rem;
-            font-family: 'Orbitron', sans-serif; /* Futuristic font */
+            /* Responsive font size: min 1.5rem, preferred 5vw, max 2.5rem */
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            line-height: 1.3; /* Fixed line height for readability */
+            /* Set a fixed height and width to prevent layout shifts */
+            min-height: 5em; /* Adjust based on font sizes and line height to fit all text */
+            width: 100%; /* Take full available width within main's max-width */
+            display: flex; /* Use flexbox to center content */
+            align-items: center; /* Vertically center */
+            justify-content: center; /* Horizontally center */
+            text-align: center; /* Ensure text itself is centered within its flex item */
+            
             /* Gradient text effect for the message */
             background: linear-gradient(to right, #ff6ec4, #7873f5);
             -webkit-background-clip: text;
@@ -130,7 +149,38 @@
             margin-bottom: 2rem;
             /* Add text shadow for a more pronounced 3D/glowing effect */
             text-shadow: 0 0 8px rgba(255, 110, 196, 0.6), 0 0 15px rgba(120, 115, 245, 0.4);
+            /* Font change animation classes */
+            will-change: font-family, opacity, filter, transform; /* Optimized for animation including filter and transform */
+            padding: 0 1rem; /* Add horizontal padding to prevent text from touching edges */
         }
+
+        /* Font change animation classes - adjusted durations and added blur */
+        .message.font-fade-out {
+            animation: fadeOutBlurGlitch 1s ease-out forwards; /* Increased duration to 1s */
+        }
+
+        .message.font-fade-in {
+            animation: fadeInBlurGlitch 1s ease-in forwards; /* Increased duration to 1s */
+        }
+
+        /* New keyframes for glitchy fade out */
+        @keyframes fadeOutBlurGlitch {
+            0% { opacity: 1; filter: blur(0px) hue-rotate(0deg); transform: translateX(0) skewX(0deg); }
+            25% { transform: translateX(5px) skewX(2deg); filter: blur(2px) hue-rotate(30deg); }
+            50% { opacity: 0.5; transform: translateX(-5px) skewX(-2deg); filter: blur(4px) hue-rotate(60deg); }
+            75% { transform: translateX(3px) skewX(1deg); filter: blur(6px) hue-rotate(90deg); }
+            100% { opacity: 0; filter: blur(8px) hue-rotate(120deg); transform: translateX(0) skewX(0deg); }
+        }
+
+        /* New keyframes for glitchy fade in */
+        @keyframes fadeInBlurGlitch {
+            0% { opacity: 0; filter: blur(8px) hue-rotate(120deg); transform: translateX(0) skewX(0deg); }
+            25% { transform: translateX(-3px) skewX(-1deg); filter: blur(6px) hue-rotate(90deg); }
+            50% { opacity: 0.5; transform: translateX(5px) skewX(2deg); filter: blur(4px) hue-rotate(60deg); }
+            75% { transform: translateX(-5px) skewX(-2deg); filter: blur(2px) hue-rotate(30deg); }
+            100% { opacity: 1; filter: blur(0px) hue-rotate(0deg); transform: translateX(0) skewX(0deg); }
+        }
+
 
         /* Footer Styling */
         footer {
@@ -193,11 +243,12 @@
                 padding: 0.4rem 1rem;
             }
             main {
-                padding: 1.5rem; /* Reduce main padding on mobile */
+                padding: 1.5rem 0.5rem; /* Reduce main padding on mobile */
             }
             .message {
-                font-size: 1.3rem; /* Smaller message on mobile */
+                font-size: clamp(1.2rem, 4vw, 1.8rem); /* Smaller clamp range for mobile */
                 margin-bottom: 1.5rem;
+                min-height: 4em; /* Adjust min-height for mobile to fit text */
             }
             footer {
                 padding: 1.5rem; /* Reduce footer padding on mobile */
@@ -240,8 +291,8 @@
 
     <footer>
         <div class="contact-info">
-            <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer" id="whatsapp-btn">WhatsApp</a>
+            <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer" id="facebook-btn">Facebook</a>
         </div>
         <div class="copyright-text">&copy; 2025 Aurtho.com. All rights reserved.</div>
     </footer>
@@ -266,6 +317,428 @@
         // Particle animation state
         let particleState = 'normal'; // 'normal', 'blackHolePull'
 
+        // Spaceship and Bullet variables
+        const spaceships = [];
+        const bullets = [];
+        const explosions = []; // Array to manage explosion particles
+        const maxSpaceships = 15; // Increased number of spaceships
+        const spaceshipSpeed = 0.02; // Reduced spaceship speed
+        const bulletSpeed = 0.3; // Reduced bullet speed
+        const fireRate = 1500; // milliseconds between shots (slightly longer)
+        const collisionRadius = 0.2; // Reduced collision radius for smaller ships
+        const worldBounds = 10; // Reduced world bounds for smaller ships
+
+        let lastFrameTime = 0; // For deltaTime calculation
+
+        // Explosion configurations
+        const EXPLOSION_CONFIGS = {
+            'small': {
+                particleCount: 10,
+                particleSize: 0.05,
+                particleColor: 0xffa500, // Orange
+                particleVelocity: 0.3,
+                maxLifetime: 500
+            },
+            'medium': {
+                particleCount: 30,
+                particleSize: 0.08,
+                particleColor: 0xff8c00, // Darker Orange
+                particleVelocity: 0.6,
+                maxLifetime: 800
+            },
+            'big': {
+                particleCount: 60,
+                particleSize: 0.12,
+                particleColor: 0xff4500, // Red-Orange
+                particleVelocity: 1.0,
+                maxLifetime: 1200
+            },
+            'fusion': {
+                particleCount: 150, // Increased particle count for fusion
+                particleSize: 0.18, // Slightly larger particles for fusion
+                particleColor: 0x8a2be2, // Blue-Violet
+                particleVelocity: 1.8, // Faster velocity for fusion
+                maxLifetime: 1800, // Longer lifetime for fusion
+                secondaryColor: 0x00ffff // Cyan secondary
+            }
+        };
+
+        // Font animation variables
+        const futuristicFonts = [
+            "'Orbitron', sans-serif",
+            "'Rajdhani', sans-serif",
+            "'Syncopate', sans-serif",
+            "'Michroma', sans-serif"
+        ];
+        let currentFontIndex = 0;
+        let fontChangeIntervalId; // To store the interval ID
+
+
+        /**
+         * Creates a more realistic and smaller spaceship mesh.
+         * @returns {THREE.Group} A Three.js group representing a spaceship.
+         */
+        function createSpaceshipMesh() {
+            const ship = new THREE.Group();
+            const scaleFactor = 0.4; // Overall scale factor for the spaceship
+
+            // Main body (sleeker cylinder or elongated box)
+            const bodyGeometry = new THREE.CylinderGeometry(0.1 * scaleFactor, 0.1 * scaleFactor, 1.0 * scaleFactor, 8);
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.2 });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.rotation.x = Math.PI / 2; // Orient along Z-axis
+            ship.add(body);
+
+            // Cockpit (smaller cone)
+            const cockpitGeometry = new THREE.ConeGeometry(0.1 * scaleFactor, 0.3 * scaleFactor, 8);
+            const cockpitMaterial = new THREE.MeshPhongMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 0.7 });
+            const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
+            cockpit.position.z = 0.5 * scaleFactor;
+            cockpit.rotation.x = Math.PI / 2;
+            ship.add(cockpit);
+
+            // Wings (thin, flat boxes)
+            const wingGeometry = new THREE.BoxGeometry(0.02 * scaleFactor, 1.2 * scaleFactor, 0.4 * scaleFactor);
+            const wingMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 0.1 });
+
+            const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
+            leftWing.position.x = -0.5 * scaleFactor;
+            leftWing.position.z = -0.2 * scaleFactor;
+            leftWing.rotation.z = Math.PI / 2;
+            ship.add(leftWing);
+
+            const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
+            rightWing.position.x = 0.5 * scaleFactor;
+            rightWing.position.z = -0.2 * scaleFactor;
+            rightWing.rotation.z = Math.PI / 2;
+            ship.add(rightWing);
+
+            // Engines (small cylinders at the back)
+            const engineGeometry = new THREE.CylinderGeometry(0.05 * scaleFactor, 0.05 * scaleFactor, 0.2 * scaleFactor, 6);
+            const engineMaterial = new THREE.MeshPhongMaterial({ color: 0xffa500, emissive: 0xffa500, emissiveIntensity: 0.8 }); // Orange glow
+
+            const leftEngine = new THREE.Mesh(engineGeometry, engineMaterial);
+            leftEngine.position.x = -0.15 * scaleFactor;
+            leftEngine.position.z = -0.5 * scaleFactor;
+            leftEngine.rotation.x = Math.PI / 2;
+            ship.add(leftEngine);
+
+            const rightEngine = new THREE.Mesh(engineGeometry, engineMaterial);
+            rightEngine.position.x = 0.15 * scaleFactor;
+            rightEngine.position.z = -0.5 * scaleFactor;
+            rightEngine.rotation.x = Math.PI / 2;
+            ship.add(rightEngine);
+
+            return ship;
+        }
+
+        /**
+         * Creates a new spaceship and adds it to the scene.
+         */
+        function spawnSpaceship() {
+            const ship = createSpaceshipMesh();
+            ship.position.set(
+                (Math.random() - 0.5) * worldBounds * 2,
+                (Math.random() - 0.5) * worldBounds * 2,
+                (Math.random() - 0.5) * worldBounds * 2
+            );
+            ship.userData.velocity = new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01);
+            ship.userData.fireCooldown = Math.random() * fireRate; // Initial random cooldown
+            ship.userData.health = 3; // Health for each ship
+            ship.userData.isDestroyed = false;
+            ship.userData.target = null; // Will be assigned later
+            ship.userData.destructionProgress = 0; // For destruction animation
+            ship.userData.materials = []; // Store materials for efficient transparency update
+            ship.traverse(child => {
+                if (child.isMesh) {
+                    ship.userData.materials.push(child.material);
+                }
+            });
+
+            spaceships.push(ship);
+            scene.add(ship);
+        }
+
+        /**
+         * Creates a bullet mesh.
+         * @returns {THREE.Mesh} A Three.js mesh representing a bullet.
+         */
+        function createBulletMesh() {
+            const geometry = new THREE.SphereGeometry(0.05, 8, 8);
+            const material = new THREE.MeshBasicMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 1.0 });
+            return new THREE.Mesh(geometry, material);
+        }
+
+        /**
+         * Fires a bullet from a given spaceship towards a target.
+         * @param {THREE.Group} firingShip - The spaceship firing the bullet.
+         * @param {THREE.Group} targetShip - The target spaceship.
+         */
+        function fireBullet(firingShip, targetShip) {
+            const bullet = createBulletMesh();
+            bullet.position.copy(firingShip.position); // Start at ship's position
+
+            // Calculate direction towards target
+            const direction = targetShip.position.clone().sub(firingShip.position).normalize();
+            bullet.userData.velocity = direction.multiplyScalar(bulletSpeed);
+            bullet.userData.shooter = firingShip; // Store shooter to avoid self-collision
+            bullet.userData.lifetime = 0; // For bullet decay
+
+            bullets.push(bullet);
+            scene.add(bullet);
+        }
+
+        /**
+         * Creates an explosion effect at a given position based on type.
+         * @param {THREE.Vector3} position - The position of the explosion.
+         * @param {string} type - The type of explosion ('small', 'medium', 'big', 'fusion').
+         */
+        function createExplosion(position, type = 'medium') {
+            const config = EXPLOSION_CONFIGS[type] || EXPLOSION_CONFIGS['medium']; // Default to medium
+
+            const explosionParticles = new THREE.Group();
+            const particleGeometry = new THREE.SphereGeometry(config.particleSize, 4, 4); // Small spheres
+
+            for (let i = 0; i < config.particleCount; i++) {
+                // Determine the particle's color
+                let particleColor = new THREE.Color(config.particleColor);
+                if (type === 'fusion' && config.secondaryColor) { // Check if secondaryColor exists
+                    if (Math.random() > 0.5) { // 50% chance to use secondary color for fusion
+                        particleColor.set(config.secondaryColor);
+                    }
+                }
+
+                const particleMaterial = new THREE.MeshBasicMaterial({
+                    color: particleColor, // Use the determined color
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    emissive: particleColor, // Emissive also uses the determined color
+                    emissiveIntensity: 1.0
+                });
+
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                particle.position.set(0, 0, 0); // Start at explosion center
+                particle.userData.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * config.particleVelocity, // Random initial velocity
+                    (Math.random() - 0.5) * config.particleVelocity,
+                    (Math.random() - 0.5) * config.particleVelocity
+                );
+                particle.userData.lifetime = 0;
+                particle.userData.maxLifetime = config.maxLifetime + Math.random() * (config.maxLifetime / 2); // Add randomness
+                explosionParticles.add(particle);
+            }
+            explosionParticles.position.copy(position);
+            explosions.push(explosionParticles);
+            scene.add(explosionParticles);
+        }
+
+        /**
+         * Updates the state of all explosions.
+         * @param {number} deltaTime - Time elapsed since last frame.
+         */
+        function updateExplosions(deltaTime) {
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const explosionGroup = explosions[i];
+                explosionGroup.children.forEach(particle => {
+                    particle.position.add(particle.userData.velocity.clone().multiplyScalar(deltaTime / 1000)); // Move based on velocity
+                    particle.userData.lifetime += deltaTime;
+
+                    const progress = particle.userData.lifetime / particle.userData.maxLifetime;
+                    if (progress < 1) {
+                        particle.material.opacity = 1 - progress; // Fade out
+                        particle.scale.setScalar(1 - progress); // Shrink
+                    }
+                });
+
+                // Remove explosion group if all particles have faded
+                const allFaded = explosionGroup.children.every(p => p.material.opacity <= 0.01);
+                if (allFaded || explosionGroup.children.length === 0) {
+                    scene.remove(explosionGroup);
+                    // Dispose of geometries and materials within the group
+                    explosionGroup.children.forEach(child => {
+                        if (child.isMesh) {
+                            if (child.geometry) child.geometry.dispose();
+                            if (child.material) child.material.dispose();
+                        }
+                    });
+                    explosions.splice(i, 1);
+                }
+            }
+        }
+
+        /**
+         * Updates the state of all spaceships.
+         * @param {number} deltaTime - Time elapsed since last frame.
+         */
+        function updateSpaceships(deltaTime) {
+            for (let i = spaceships.length - 1; i >= 0; i--) {
+                const ship = spaceships[i];
+                if (ship.userData.isDestroyed) {
+                    // Handle destruction animation
+                    ship.userData.destructionProgress += deltaTime / 1000; // Convert to seconds
+                    const progress = ship.userData.destructionProgress;
+
+                    if (progress < 1) {
+                        ship.scale.setScalar(1 - progress); // Shrink
+                        // Efficiently update opacity using stored materials
+                        ship.userData.materials.forEach(mat => {
+                            // Ensure material is transparent before setting opacity
+                            if (mat.transparent === false) mat.transparent = true;
+                            mat.opacity = 1 - progress;
+                        });
+                    } else {
+                        // Determine explosion type based on a random chance
+                        let explosionType = 'medium';
+                        const rand = Math.random();
+                        if (rand < 0.2) { // Increased 20% chance for fusion blast
+                            explosionType = 'fusion';
+                        } else if (rand < 0.4) { // 20% chance for big blast
+                            explosionType = 'big';
+                        } else if (rand < 0.7) { // 30% chance for medium blast
+                            explosionType = 'medium';
+                        } else { // 30% chance for small blast
+                            explosionType = 'small';
+                        }
+
+                        createExplosion(ship.position.clone(), explosionType);
+                        // Fully destroyed, remove and respawn
+                        scene.remove(ship);
+                        // Dispose of geometries and materials to free up memory
+                        ship.traverse(child => {
+                            if (child.isMesh) {
+                                if (child.geometry) child.geometry.dispose(); // Check if geometry exists
+                                if (child.material) child.material.dispose(); // Check if material exists
+                            }
+                        });
+                        spaceships.splice(i, 1);
+                        spawnSpaceship(); // Replace destroyed ship
+                    }
+                    continue; // Skip movement/firing for destroyed ships
+                }
+
+                // Find a target if none or if target is destroyed
+                if (!ship.userData.target || ship.userData.target.userData.isDestroyed || !scene.children.includes(ship.userData.target)) {
+                    const potentialTargets = spaceships.filter(s => s !== ship && !s.userData.isDestroyed);
+                    if (potentialTargets.length > 0) {
+                        ship.userData.target = potentialTargets[Math.floor(Math.random() * potentialTargets.length)];
+                    } else {
+                        // No other ships, just wander
+                        ship.userData.velocity.add(new THREE.Vector3((Math.random() - 0.5) * 0.001, (Math.random() - 0.5) * 0.001, (Math.random() - 0.5) * 0.001));
+                        ship.userData.velocity.clampLength(0, spaceshipSpeed);
+                    }
+                }
+
+                // Movement
+                if (ship.userData.target) {
+                    const targetDirection = ship.userData.target.position.clone().sub(ship.position).normalize();
+                    ship.userData.velocity.lerp(targetDirection.multiplyScalar(spaceshipSpeed), 0.1); // Smoothly steer towards target
+                }
+                ship.position.add(ship.userData.velocity);
+
+                // Boundary wrapping
+                if (Math.abs(ship.position.x) > worldBounds) ship.position.x *= -1;
+                if (Math.abs(ship.position.y) > worldBounds) ship.position.y *= -1;
+                if (Math.abs(ship.position.z) > worldBounds) ship.position.z *= -1;
+
+                // Rotation to face direction of movement
+                const lookAtTarget = ship.position.clone().add(ship.userData.velocity);
+                ship.lookAt(lookAtTarget);
+
+                // Firing
+                ship.userData.fireCooldown -= deltaTime;
+                if (ship.userData.fireCooldown <= 0 && ship.userData.target && !ship.userData.target.userData.isDestroyed) {
+                    fireBullet(ship, ship.userData.target);
+                    ship.userData.fireCooldown = fireRate + Math.random() * 500; // Add some randomness to fire rate
+                }
+            }
+        }
+
+        /**
+         * Updates the state of all bullets and handles collisions.
+         * @param {number} deltaTime - Time elapsed since last frame.
+         */
+        function updateBullets(deltaTime) {
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                bullet.position.add(bullet.userData.velocity);
+                bullet.userData.lifetime += deltaTime;
+
+                // Remove old bullets
+                if (bullet.userData.lifetime > 3000 || Math.abs(bullet.position.x) > worldBounds * 2 || Math.abs(bullet.position.y) > worldBounds * 2 || Math.abs(bullet.position.z) > worldBounds * 2) {
+                    scene.remove(bullet);
+                    // Dispose of geometry and material
+                    if (bullet.geometry) bullet.geometry.dispose();
+                    if (bullet.material) bullet.material.dispose();
+                    bullets.splice(i, 1);
+                    continue;
+                }
+
+                // Collision detection
+                for (let j = spaceships.length - 1; j >= 0; j--) {
+                    const ship = spaceships[j];
+                    if (ship !== bullet.userData.shooter && !ship.userData.isDestroyed) { // Don't hit self
+                        const distance = bullet.position.distanceTo(ship.position);
+                        if (distance < collisionRadius) {
+                            // Collision!
+                            ship.userData.health--;
+                            if (ship.userData.health <= 0) {
+                                ship.userData.isDestroyed = true; // Mark for destruction animation
+                            }
+                            scene.remove(bullet);
+                            // Dispose of geometry and material
+                            if (bullet.geometry) bullet.geometry.dispose();
+                            if (bullet.material) bullet.material.dispose();
+                            bullets.splice(i, 1);
+                            break; // Bullet is destroyed, move to next bullet
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Starts the font changing animation for the message text.
+         */
+        function startFontAnimation() {
+            const messageElement = document.querySelector('.message');
+            if (!messageElement) return;
+
+            fontChangeIntervalId = setInterval(() => {
+                // Trigger fade out
+                messageElement.classList.add('font-fade-out');
+
+                // Wait for fade out to complete, then change font and fade in
+                setTimeout(() => {
+                    currentFontIndex = (currentFontIndex + 1) % futuristicFonts.length;
+                    messageElement.style.fontFamily = futuristicFonts[currentFontIndex];
+
+                    // Trigger fade in
+                    messageElement.classList.remove('font-fade-out');
+                    messageElement.classList.add('font-fade-in');
+
+                    // Remove fade-in class after animation completes
+                    setTimeout(() => {
+                        messageElement.classList.remove('font-fade-in');
+                    }, 1000); // Match fadeIn duration
+                }, 1000); // Match fadeOut duration
+            }, 6000); // Change font every 6 seconds
+        }
+
+        /**
+         * Stops the font changing animation.
+         */
+        function stopFontAnimation() {
+            clearInterval(fontChangeIntervalId);
+            const messageElement = document.querySelector('.message');
+            if (messageElement) {
+                messageElement.classList.remove('font-fade-out', 'font-fade-in');
+                // Optionally reset to default font or keep the last one if needed
+                // messageElement.style.fontFamily = futuristicFonts[0];
+            }
+        }
+
+        // REMOVED ASTRONAUT MESH CREATION AND ANIMATION FUNCTIONS
+
         /**
          * Initializes the Three.js scene, camera, renderer, and particles.
          * Also prepares HTML elements for animation by identifying main components.
@@ -283,6 +756,15 @@
             renderer.setSize(window.innerWidth, window.innerHeight); // Set renderer size to match window
             renderer.setPixelRatio(window.devicePixelRatio); // Adjust for high-DPI screens
             renderer.setClearColor(0x000000); // Ensure the canvas background is black
+
+            // Add ambient light to the scene for more realistic materials
+            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+            scene.add(ambientLight);
+
+            // Add a directional light for shadows and definition
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 5);
+            scene.add(directionalLight);
 
             // Create a particle system for the abstract 3D background
             const particleCount = 5000; // Increased particle count for more density
@@ -338,15 +820,6 @@
             particles = new THREE.Points(geometry, material);
             scene.add(particles);
 
-            // Add ambient light to the scene
-            const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-            scene.add(ambientLight);
-
-            // Add a point light for additional illumination (optional for particles)
-            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-            pointLight.position.set(5, 5, 5);
-            scene.add(pointLight);
-
             // Event listener for window resizing to keep the canvas responsive
             window.addEventListener('resize', onWindowResize, false);
 
@@ -370,6 +843,24 @@
             }
             // Elements are still in their normal document flow at this point.
             // Their positions and styles will be captured just before animation starts.
+
+            // Initialize spaceships
+            for (let i = 0; i < maxSpaceships; i++) {
+                spawnSpaceship();
+            }
+
+            // REMOVED ASTRONAUT INITIALIZATION
+            // astronaut = createAstronautMesh();
+            // scene.add(astronaut);
+            // const whatsappBtn = document.getElementById('whatsapp-btn');
+            // if (whatsappBtn) {
+            //     whatsappBtnWorldPos = screenToWorldPosition(whatsappBtn, 0);
+            //     astronaut.position.copy(whatsappBtnWorldPos);
+            //     astronaut.position.y += (0.6 / 2 + 0.4) * 0.2;
+            //     astronautAnimationState.targetElementId = 'whatsapp-btn';
+            //     astronautAnimationState.isMoving = false;
+            //     astronautAnimationState.phase = 'idle';
+            // }
         }
 
         /**
@@ -379,6 +870,20 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix(); // Update camera's projection matrix
             renderer.setSize(window.innerWidth, window.innerHeight); // Resize renderer
+
+            // REMOVED ASTRONAUT POSITION UPDATE ON RESIZE
+            // const whatsappBtn = document.getElementById('whatsapp-btn');
+            // const facebookBtn = document.getElementById('facebook-btn');
+            // if (whatsappBtn) whatsappBtnWorldPos = screenToWorldPosition(whatsappBtn, 0);
+            // if (facebookBtn) facebookBtnWorldPos = screenToWorldPosition(facebookBtn, 0);
+            // if (astronaut && !astronautAnimationState.isMoving) {
+            //     const targetElement = document.getElementById(astronautAnimationState.targetElementId === 'whatsapp-btn' ? 'whatsapp-btn' : 'facebook-btn');
+            //     if (targetElement) {
+            //         const newPos = screenToWorldPosition(targetElement, 0);
+            //         astronaut.position.copy(newPos);
+            //         astronaut.position.y += (0.6 / 2 + 0.4) * 0.2;
+            //     }
+            // }
         }
 
         /**
@@ -386,6 +891,15 @@
          * This function is called ONLY when the "Aurtho" button is clicked.
          */
         function startBlackHoleAnimation() {
+            // Stop font animation when black hole animation starts
+            stopFontAnimation();
+
+            // REMOVED ASTRONAUT REMOVAL DURING BLACK HOLE ANIMATION
+            // if (astronaut) {
+            //     scene.remove(astronaut);
+            //     astronautAnimationState.isMoving = false;
+            // }
+
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
 
@@ -473,6 +987,9 @@
         function animate(time) {
             requestAnimationFrame(animate); // Request the next animation frame
 
+            const deltaTime = time - lastFrameTime;
+            lastFrameTime = time;
+
             const positions = particles.geometry.attributes.position.array;
             const velocities = particles.geometry.attributes.velocity.array; // Get velocities array
             const originalParticleSize = 0.05;
@@ -483,6 +1000,15 @@
                 particles.rotation.y += 0.001;
                 particles.material.opacity = 1;
                 particles.material.size = originalParticleSize;
+
+                // Update spaceships, bullets, and explosions only when black hole is not active
+                if (!isBlackHoleActive) {
+                    updateSpaceships(deltaTime);
+                    updateBullets(deltaTime);
+                    updateExplosions(deltaTime); // Update explosions
+                    // REMOVED ASTRONAUT ANIMATION CALL
+                    // animateAstronaut();
+                }
             } else if (particleState === 'blackHolePull') {
                 const elapsed = time - blackHoleStartTime;
                 const progress = Math.min(elapsed / blackHoleDuration, 1);
@@ -539,6 +1065,7 @@
         window.onload = function () {
             init(); // Setup the 3D environment and prepare HTML elements (identify main components)
             animate(0); // Start the animation loop (pass initial time 0)
+            startFontAnimation(); // Start the font changing animation
 
             // Add click event listener to the logo for the black hole effect
             const logoLink = document.querySelector('.logo-link');
@@ -550,6 +1077,15 @@
                         isBlackHoleActive = true;
                         particleState = 'blackHolePull'; // Set particle state for pull
                         blackHoleStartTime = performance.now(); // Record start time of animation
+
+                        // Hide all spaceships and bullets during black hole animation
+                        spaceships.forEach(ship => scene.remove(ship));
+                        bullets.forEach(bullet => scene.remove(bullet));
+                        spaceships.length = 0; // Clear arrays
+                        bullets.length = 0;
+                        explosions.forEach(exp => scene.remove(exp)); // Clear explosions
+                        explosions.length = 0;
+
 
                         // Start animating HTML elements with staggered delays
                         startBlackHoleAnimation();
