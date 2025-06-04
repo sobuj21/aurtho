@@ -48,7 +48,6 @@
             width: 100%;
             height: 100%;
             z-index: -1; /* Place behind all other content */
-            /* IMPORTANT: Removed background-image here to prevent flash on reload */
             background-color: black; /* Ensure it's black by default */
             transition: opacity 0.5s ease-out; /* For fading out the canvas */
         }
@@ -141,6 +140,7 @@
             justify-content: center;
             gap: 2rem; /* Space between contact links */
             flex-wrap: wrap; /* Allow links to wrap on smaller screens */
+            margin-bottom: 1rem; /* Add space between contact links and copyright */
         }
 
         /* Contact Link Styling - now glowing, transparent button-like elements */
@@ -166,19 +166,43 @@
             text-shadow: 0 0 8px #ff5cf5, 0 0 15px #ff5cf5; /* Brighter text glow on hover */
         }
 
+        /* Copyright text styling */
+        .copyright-text {
+            opacity: 0.6;
+            font-size: 0.9rem; /* Slightly smaller font for copyright */
+        }
+
         /* Responsive Adjustments for Smaller Screens */
         @media (max-width: 768px) {
+            header {
+                padding: 1.5rem; /* Reduce header padding on mobile */
+            }
             .logo {
-                font-size: 2.2rem; /* Smaller logo on mobile */
+                font-size: 2rem; /* Smaller logo on mobile */
             }
             .logo-link {
                 padding: 0.4rem 1rem;
             }
+            main {
+                padding: 1.5rem; /* Reduce main padding on mobile */
+            }
             .message {
-                font-size: 1.5rem; /* Smaller message on mobile */
+                font-size: 1.3rem; /* Smaller message on mobile */
+                margin-bottom: 1.5rem;
+            }
+            footer {
+                padding: 1.5rem; /* Reduce footer padding on mobile */
+            }
+            .contact-info {
+                flex-direction: column; /* Stack contact links vertically */
+                gap: 0.8rem; /* Reduce gap between stacked links */
             }
             .contact-info a {
-                padding: 0.6rem 1.2rem;
+                padding: 0.5rem 1rem; /* Adjust padding for mobile buttons */
+                font-size: 0.9rem; /* Smaller font for contact links */
+            }
+            .copyright-text {
+                font-size: 0.8rem; /* Even smaller font for copyright on mobile */
             }
         }
 
@@ -210,7 +234,7 @@
             <a href="https://wa.me/17162268360" target="_blank" rel="noopener noreferrer">WhatsApp</a>
             <a href="https://www.facebook.com/sobujis" target="_blank" rel="noopener noreferrer">Facebook</a>
         </div>
-        <div style="margin-top: 1rem; opacity: 0.6;">&copy; 2025 Aurtho.com. All rights reserved.</div>
+        <div class="copyright-text">&copy; 2025 Aurtho.com. All rights reserved.</div>
     </footer>
 
     <script>
@@ -321,7 +345,7 @@
             const logoLink = document.querySelector('.logo-link');
             const messageDiv = document.querySelector('.message');
             const contactLinks = Array.from(document.querySelectorAll('footer .contact-info a'));
-            const copyrightDiv = document.querySelector('footer div:last-child');
+            const copyrightDiv = document.querySelector('.copyright-text'); // Targeted by new class
 
             // Add these main elements to the animatingElements array
             if (logoLink) {
