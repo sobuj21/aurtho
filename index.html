@@ -19,11 +19,20 @@
             box-sizing: border-box;
         }
 
-        /* Prevent scrollbars due to fixed canvas */
+        /* Re-enabled vertical scrolling for the body and hide scrollbar */
         html, body {
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto;   /* Allow vertical scrolling if content overflows */
+            /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
             /* Ensure body has a default background for the final fade to black */
             background-color: black; /* Explicitly black */
+        }
+
+        /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+        body::-webkit-scrollbar {
+            display: none;
         }
 
         /* Body Styling */
